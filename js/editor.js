@@ -130,26 +130,31 @@
     const d = Tarjeta.dibujar(tarjeta, crudo);
     $("color-hex").textContent = d.color;
 
-    // Avisar si el texto se pasa del límite
+    // Avisar si el texto se pasa del límite o trae groserías
+    const ofensivos = [];
     ["nombre", "mensaje"].forEach((k) => {
       const largo = Tarjeta.graphemes(crudo[k]).length;
-      campos[k].classList.toggle("excede", largo > Tarjeta.LIMITES[k]);
-      campos[k].title = `${largo} / ${Tarjeta.LIMITES[k]} caracteres`;
+      const ofensivo = Filtro.esOfensivo(crudo[k]);
+      if (ofensivo) ofensivos.push(k);
+      campos[k].classList.toggle("excede", largo > Tarjeta.LIMITES[k] || ofensivo);
+      campos[k].title = ofensivo ? "Este texto tiene palabras no permitidas" : `${largo} / ${Tarjeta.LIMITES[k]} caracteres`;
     });
     ajustarAncho();
 
     urlActual = Tarjeta.aURL(crudo);
     const largo = urlActual.length;
-    urlValida = largo <= Tarjeta.MAX_URL;
+    urlValida = largo <= Tarjeta.MAX_URL && !ofensivos.length;
 
     $("url").textContent = urlActual;
     const pct = Math.min(100, (largo / Tarjeta.MAX_URL) * 100);
     const medidor = $("medidor");
     medidor.style.width = pct + "%";
     medidor.dataset.nivel = !urlValida ? "mal" : pct > 80 ? "casi" : "bien";
-    $("contador").textContent = urlValida
-      ? `${largo} / ${Tarjeta.MAX_URL} caracteres ✅`
-      : `${largo} / ${Tarjeta.MAX_URL} caracteres ❌ La URL es muy larga: acorta el nombre o el mensaje (los emojis ocupan ~12 caracteres cada uno).`;
+    $("contador").textContent = ofensivos.length
+      ? `🚫 Tu ${ofensivos.join(" y ")} tiene palabras no permitidas. Cámbialo para poder generar tu tarjeta.`
+      : urlValida
+        ? `${largo} / ${Tarjeta.MAX_URL} caracteres ✅`
+        : `${largo} / ${Tarjeta.MAX_URL} caracteres ❌ La URL es muy larga: acorta el nombre o el mensaje (los emojis ocupan ~12 caracteres cada uno).`;
     $("contador").classList.toggle("error", !urlValida);
 
     btnCopiar.disabled = !urlValida;

@@ -38,8 +38,10 @@ const Tarjeta = (() => {
   }
 
   function limpiar(d = {}) {
-    const nombre = recortar(d.nombre, LIMITES.nombre).trim();
-    const mensaje = recortar(d.mensaje, LIMITES.mensaje).trim();
+    // Un texto con groserías se cambia por el de por defecto (también si llega por la URL).
+    const permitido = (t) => (typeof Filtro !== "undefined" && Filtro.esOfensivo(t) ? "" : t);
+    const nombre = permitido(recortar(d.nombre, LIMITES.nombre).trim());
+    const mensaje = permitido(recortar(d.mensaje, LIMITES.mensaje).trim());
     const emoji = graphemes(String(d.emoji ?? "").trim())[0];
     return {
       nombre: nombre || DEFAULTS.nombre,

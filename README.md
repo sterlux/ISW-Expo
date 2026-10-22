@@ -33,6 +33,7 @@ python3 -m http.server 8000
 | --- | --- |
 | `js/tarjeta.js` | Lógica compartida: limpia datos, arma/lee la URL, dibuja la tarjeta y el confeti |
 | `js/editor.js` | Editor en vivo, medidor de 450 caracteres, Web NFC (`NDEFReader`) y QR |
+| `js/filtro.js` | Filtro de groserías para nombre y mensaje (agrega palabras en `PALABRAS` o `RAICES`) |
 | `js/vendor/qrcode.js` | [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (MIT), incluido para no depender de un CDN |
 | `css/estilos.css` | Estilos y animaciones |
 | `img/zorro.svg` | Logo del zorro (tarjeta y favicon) |
