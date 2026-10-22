@@ -55,6 +55,15 @@
         <p class="atajos-titulo">Emojis rápidos</p>
         <div class="chips" id="chips-emoji"></div>
       </div>
+
+      <dialog class="selector" id="selector-emoji" aria-labelledby="selector-titulo">
+        <div class="selector-cabecera">
+          <h3 id="selector-titulo">Elige un emoji</h3>
+          <button type="button" class="selector-cerrar" id="selector-cerrar" aria-label="Cerrar">✕</button>
+        </div>
+        <nav class="selector-tabs" id="selector-tabs" aria-label="Categorías"></nav>
+        <div class="selector-lista" id="selector-lista"></div>
+      </dialog>
     </section>
 
     <!-- 2. Vista previa -->
@@ -102,6 +111,7 @@
 
   <script src="js/vendor/qrcode.js"></script>
   <script src="js/tarjeta.js"></script>
+  <script src="js/emojis.js"></script>
   <script src="js/editor.js"></script>
 </body>
 </html>

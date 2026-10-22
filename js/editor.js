@@ -50,6 +50,64 @@
   EMOJIS.forEach((e) =>
     $("chips-emoji").appendChild(chip(e, () => { campos.emoji.value = e; actualizar(true); }))
   );
+  const btnTodos = chip("Ver todos ▾", abrirSelector);
+  btnTodos.classList.add("chip-todos");
+  btnTodos.setAttribute("aria-haspopup", "dialog");
+  $("chips-emoji").appendChild(btnTodos);
+
+  // ---------- Selector con todos los emojis ----------
+  const selector = $("selector-emoji");
+  const selectorLista = $("selector-lista");
+  const selectorTabs = $("selector-tabs");
+
+  // Se construye la primera vez que se abre para no cargar ~1,800 botones al inicio.
+  function construirSelector() {
+    EMOJIS_TODOS.forEach((g, i) => {
+      const seccion = document.createElement("section");
+      seccion.id = "cat-" + i;
+      const h = document.createElement("h4");
+      h.textContent = g.nombre;
+      const rejilla = document.createElement("div");
+      rejilla.className = "selector-rejilla";
+      g.lista.split(" ").forEach((e) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.textContent = e;
+        rejilla.appendChild(b);
+      });
+      seccion.append(h, rejilla);
+      selectorLista.appendChild(seccion);
+
+      const tab = document.createElement("button");
+      tab.type = "button";
+      tab.textContent = g.icono;
+      tab.title = g.nombre;
+      tab.setAttribute("aria-label", g.nombre);
+      tab.addEventListener("click", () => seccion.scrollIntoView({ block: "start" }));
+      selectorTabs.appendChild(tab);
+    });
+  }
+
+  function abrirSelector() {
+    if (!selectorLista.childElementCount) construirSelector();
+    const actual = Tarjeta.limpiar(leer()).emoji;
+    selectorLista.querySelectorAll(".selector-rejilla button").forEach((b) =>
+      b.classList.toggle("elegido", b.textContent === actual)
+    );
+    selector.showModal();
+    selectorLista.querySelector(".elegido")?.scrollIntoView({ block: "center" });
+  }
+
+  selectorLista.addEventListener("click", (ev) => {
+    const b = ev.target.closest(".selector-rejilla button");
+    if (!b) return;
+    campos.emoji.value = b.textContent;
+    selector.close();
+    actualizar(true);
+  });
+  $("selector-cerrar").addEventListener("click", () => selector.close());
+  // Tocar fuera del panel lo cierra.
+  selector.addEventListener("click", (ev) => { if (ev.target === selector) selector.close(); });
 
   // ---------- Actualización en vivo ----------
   function leer() {

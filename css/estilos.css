@@ -206,6 +206,107 @@ button, input { font: inherit; color: inherit; }
 }
 .chip:active { transform: scale(0.9); }
 #chips-color .chip { border: 2px solid rgba(255, 255, 255, 0.25); }
+.chip-todos {
+  padding: 0 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--texto);
+  border-color: var(--acento);
+  background: color-mix(in srgb, var(--acento) 18%, #22223a);
+}
+
+/* ---------- Selector de todos los emojis ---------- */
+.selector {
+  width: min(100% - 24px, 520px);
+  max-width: none;
+  height: min(80dvh, 640px);
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--panel);
+  color: var(--texto);
+  overflow: hidden;
+}
+.selector[open] { display: flex; flex-direction: column; }
+.selector::backdrop { background: rgba(5, 5, 12, 0.7); backdrop-filter: blur(3px); }
+/* En celular aparece como hoja desde abajo */
+@media (max-width: 600px) {
+  .selector {
+    width: 100%;
+    margin: auto 0 0;
+    border-radius: var(--radio) var(--radio) 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .selector[open] { animation: hoja 0.25s ease-out; }
+}
+@keyframes hoja { from { transform: translateY(100%); } }
+
+.selector-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 12px 4px 16px;
+}
+.selector-cabecera h3 { margin: 0; font-size: 1.05rem; }
+.selector-cerrar {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: #24243c;
+  cursor: pointer;
+}
+.selector-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px 12px 8px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--borde);
+  scrollbar-width: none;
+}
+.selector-tabs button {
+  flex: 1 0 34px;
+  max-width: 48px;
+  height: 42px;
+  padding: 0;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  font-size: 1.35rem;
+  cursor: pointer;
+}
+.selector-tabs button:hover { background: #24243c; }
+.selector-lista {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 12px 16px;
+}
+.selector-lista h4 {
+  position: sticky;
+  top: 0;
+  margin: 0;
+  padding: 10px 4px 6px;
+  font-size: 0.8rem;
+  color: var(--tenue);
+  background: var(--panel);
+  z-index: 1;
+}
+.selector-rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+}
+.selector-rejilla button {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.selector-rejilla button:hover { background: #24243c; }
+.selector-rejilla button.elegido { background: color-mix(in srgb, var(--acento) 35%, transparent); outline: 2px solid var(--acento); }
 
 /* ---------- Tarjeta (común) ---------- */
 .escenario {
