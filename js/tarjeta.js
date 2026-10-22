@@ -98,11 +98,21 @@ const Tarjeta = (() => {
   function confeti(contenedor, color, cantidad = 40) {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const colores = [color, "#ffffff", "#ffd166", "#06d6a0", "#4cc9f0"];
+    // Sale del centro de la tarjeta (o del contenedor si no hay tarjeta).
+    const caja = contenedor.getBoundingClientRect();
+    const origen = (contenedor.querySelector(".tarjeta") || contenedor).getBoundingClientRect();
+    const cx = origen.left - caja.left - contenedor.clientLeft + origen.width / 2;
+    const cy = origen.top - caja.top - contenedor.clientTop + origen.height / 2;
     for (let i = 0; i < cantidad; i++) {
       const p = document.createElement("span");
       p.className = "confeti";
-      p.style.setProperty("--x", (Math.random() * 2 - 1) * 180 + "px");
-      p.style.setProperty("--y", -(Math.random() * 220 + 80) + "px");
+      p.style.left = cx + "px";
+      p.style.top = cy + "px";
+      // Explosión en todas direcciones, un poco más hacia arriba.
+      const angulo = Math.random() * Math.PI * 2;
+      const fuerza = Math.random() * 120 + 90;
+      p.style.setProperty("--x", Math.cos(angulo) * fuerza + "px");
+      p.style.setProperty("--y", Math.sin(angulo) * fuerza - 60 + "px");
       p.style.setProperty("--r", Math.random() * 720 - 360 + "deg");
       p.style.setProperty("--d", Math.random() * 0.25 + "s");
       p.style.background = colores[i % colores.length];
