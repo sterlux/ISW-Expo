@@ -5,9 +5,9 @@ const Tarjeta = (() => {
   const LIMITES = { nombre: 24, mensaje: 100 };
   const DEFAULTS = {
     nombre: "Tu Nombre",
-    color: "#7c3aed",
+    color: "#eab308",
     emoji: "🚀",
-    mensaje: "¡Hola! Esta tarjeta la programé yo.",
+    mensaje: "Hello World!",
   };
 
   // Corta por "caracteres visibles" (graphemes) para no partir un emoji a la mitad.
