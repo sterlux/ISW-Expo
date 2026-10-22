@@ -24,7 +24,7 @@ const Tarjeta = (() => {
   }
 
   // Emojis que no se permiten (aunque se escriban con el teclado o en la URL).
-  const EMOJIS_BLOQUEADOS = ["🖕"];
+  const EMOJIS_BLOQUEADOS = ["🖕", "🍆", "💦", "🍑", "🔞"];
 
   function emojiPermitido(e) {
     // Se ignoran tonos de piel y selector de variación para comparar el emoji base.
