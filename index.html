@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f0f1a">
+  <title>Programa tu tarjeta NFC</title>
+  <meta name="description" content="Expo de Ingeniería de Software: cambia 4 variables, ve tu tarjeta en vivo y grábala en un sticker NFC.">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body class="editor">
+  <header class="cabecera">
+    <p class="etiqueta">Expo · Ingeniería de Software</p>
+    <h1>Programa tu tarjeta NFC</h1>
+    <p class="sub">Cambia las variables del código, mira el resultado en vivo y llévatelo en un sticker.</p>
+  </header>
+
+  <main class="rejilla">
+    <!-- 1. Código -->
+    <section class="panel" aria-labelledby="t-codigo">
+      <h2 id="t-codigo"><span class="paso">1</span> Edita el código</h2>
+
+      <div class="codigo" role="group" aria-label="Bloque de código editable">
+        <div class="codigo-barra" aria-hidden="true">
+          <span class="punto"></span><span class="punto"></span><span class="punto"></span>
+          <span class="archivo">tarjeta.js</span>
+        </div>
+        <ol class="lineas">
+          <li><span class="com">// ✏️ Cambia los valores entre comillas</span></li>
+          <li><span class="kw">const</span> <span class="var">tarjeta</span> = {</li>
+          <li class="ind">
+            <label for="nombre" class="prop">nombre</label>:
+            <span class="str">"<input id="nombre" type="text" autocomplete="off" spellcheck="false">"</span>,
+          </li>
+          <li class="ind">
+            <label for="color" class="prop">color</label>:
+            <span class="str">"<input id="color" type="color" aria-describedby="color-hex"><span id="color-hex" class="hex"></span>"</span>,
+          </li>
+          <li class="ind">
+            <label for="emoji" class="prop">emoji</label>:
+            <span class="str">"<input id="emoji" type="text" autocomplete="off" inputmode="text" class="corto">"</span>,
+          </li>
+          <li class="ind">
+            <label for="mensaje" class="prop">mensaje</label>:
+            <span class="str">"<input id="mensaje" type="text" autocomplete="off">"</span>
+          </li>
+          <li>};</li>
+          <li><span class="fn">mostrar</span>(<span class="var">tarjeta</span>);</li>
+        </ol>
+      </div>
+
+      <div class="atajos">
+        <p class="atajos-titulo">Colores rápidos</p>
+        <div class="chips" id="chips-color"></div>
+        <p class="atajos-titulo">Emojis rápidos</p>
+        <div class="chips" id="chips-emoji"></div>
+      </div>
+    </section>
+
+    <!-- 2. Vista previa -->
+    <section class="panel" aria-labelledby="t-vista">
+      <h2 id="t-vista"><span class="paso">2</span> Vista previa en vivo</h2>
+      <div class="escenario escenario-mini" id="escenario">
+        <article class="tarjeta" id="tarjeta" aria-live="polite">
+          <div class="tarjeta-emoji" data-emoji></div>
+          <h3 class="tarjeta-nombre" data-nombre></h3>
+          <p class="tarjeta-mensaje" data-mensaje></p>
+          <p class="tarjeta-pie">Expo · Ingeniería de Software</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 3. URL + NFC + QR -->
+    <section class="panel" aria-labelledby="t-url">
+      <h2 id="t-url"><span class="paso">3</span> Tu URL y tu sticker</h2>
+
+      <div class="url-caja">
+        <output id="url" class="url" for="nombre color emoji mensaje"></output>
+        <div class="medidor" aria-hidden="true"><div class="medidor-barra" id="medidor"></div></div>
+        <p class="contador" id="contador"></p>
+      </div>
+
+      <div class="botones">
+        <button type="button" class="btn btn-nfc" id="btn-nfc">📲 Grabar en sticker NFC</button>
+        <button type="button" class="btn btn-sec oculto" id="btn-cancelar">Cancelar</button>
+        <button type="button" class="btn btn-sec" id="btn-copiar">Copiar URL</button>
+        <a class="btn btn-sec" id="btn-abrir" target="_blank" rel="noopener">Abrir tarjeta ↗</a>
+      </div>
+      <p class="estado" id="estado" role="status"></p>
+
+      <details class="qr-caja" id="qr-caja">
+        <summary>¿Sin NFC? Usa el QR de respaldo</summary>
+        <div class="qr" id="qr"></div>
+        <p class="nota">Escanéalo con la cámara del celular para abrir tu tarjeta.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="pie">
+    Web NFC funciona en Chrome para Android con HTTPS. Sticker recomendado: NTAG215 (504 bytes).
+  </footer>
+
+  <script src="js/vendor/qrcode.js"></script>
+  <script src="js/tarjeta.js"></script>
+  <script src="js/editor.js"></script>
+</body>
+</html>

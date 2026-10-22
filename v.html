@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f0f1a">
+  <title>Tarjeta · Expo Ingeniería de Software</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body class="vista">
+  <main class="escenario escenario-completo" id="escenario">
+    <div class="fondo" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <article class="tarjeta entrada" id="tarjeta">
+      <div class="tarjeta-emoji" data-emoji></div>
+      <h1 class="tarjeta-nombre" data-nombre></h1>
+      <p class="tarjeta-mensaje" data-mensaje></p>
+      <p class="tarjeta-pie">Expo · Ingeniería de Software</p>
+    </article>
+
+    <p class="pista" id="pista">Toca la tarjeta 🎉</p>
+    <nav class="vista-acciones">
+      <a class="btn btn-sec" id="btn-editar" href="./">✏️ Haz la tuya</a>
+    </nav>
+  </main>
+
+  <script src="js/tarjeta.js"></script>
+  <script>
+    (() => {
+      const { vacia, datos } = Tarjeta.desdeURL();
+      const tarjeta = document.getElementById("tarjeta");
+      const escenario = document.getElementById("escenario");
+      const d = Tarjeta.dibujar(tarjeta, datos);
+
+      document.title = `${d.emoji} ${d.nombre} · Expo`;
+      document.querySelector('meta[name="theme-color"]').content = d.color;
+      document.body.style.setProperty("--c", d.color);
+
+      // "Haz la tuya" abre el editor con estos valores precargados.
+      if (!vacia) document.getElementById("btn-editar").href = "./" + location.search;
+      else document.getElementById("pista").textContent = "Esta es una tarjeta de ejemplo. ¡Crea la tuya!";
+
+      // Al terminar la entrada se quita la clase para que la inclinación 3D funcione.
+      tarjeta.addEventListener("animationend", (ev) => {
+        if (ev.target === tarjeta) tarjeta.classList.remove("entrada");
+      });
+      setTimeout(() => Tarjeta.confeti(escenario, d.color, 70), 650);
+      tarjeta.addEventListener("click", () => {
+        tarjeta.classList.remove("rebote");
+        void tarjeta.offsetWidth;
+        tarjeta.classList.add("rebote");
+        Tarjeta.confeti(escenario, d.color, 40);
+      });
+
+      // Inclinación 3D con el dedo / mouse
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        escenario.addEventListener("pointermove", (ev) => {
+          const r = tarjeta.getBoundingClientRect();
+          const x = (ev.clientX - r.left) / r.width - 0.5;
+          const y = (ev.clientY - r.top) / r.height - 0.5;
+          tarjeta.style.setProperty("--rx", (-y * 14).toFixed(1) + "deg");
+          tarjeta.style.setProperty("--ry", (x * 14).toFixed(1) + "deg");
+        });
+        escenario.addEventListener("pointerleave", () => {
+          tarjeta.style.setProperty("--rx", "0deg");
+          tarjeta.style.setProperty("--ry", "0deg");
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
