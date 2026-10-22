@@ -4,7 +4,7 @@ const Tarjeta = (() => {
   const MAX_URL = 450;
   const LIMITES = { nombre: 24, mensaje: 100 };
   const DEFAULTS = {
-    nombre: "Ada",
+    nombre: "Tu Nombre",
     color: "#7c3aed",
     emoji: "🚀",
     mensaje: "¡Hola! Esta tarjeta la programé yo.",

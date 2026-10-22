@@ -1,6 +1,6 @@
 # Expo ISW · Tarjeta NFC
 
-Sitio estático (HTML, CSS y JS sin frameworks) para la Expo de Ingeniería de Software.
+Sitio estático (HTML, CSS y JS sin frameworks) para la Expo Cetys de Ingeniería de Software.
 
 - **`index.html`**: editor. El alumno cambia 4 variables (`nombre`, `color`, `emoji`, `mensaje`) en un bloque de código, ve la tarjeta en vivo, obtiene una URL corta y la graba en un sticker NFC (o usa el QR de respaldo).
 - **`v.html`**: vista. Lee los parámetros `n`, `c`, `e`, `m` de la URL y muestra la tarjeta animada.
@@ -35,4 +35,5 @@ python3 -m http.server 8000
 | `js/editor.js` | Editor en vivo, medidor de 450 caracteres, Web NFC (`NDEFReader`) y QR |
 | `js/vendor/qrcode.js` | [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (MIT), incluido para no depender de un CDN |
 | `css/estilos.css` | Estilos y animaciones |
+| `img/zorro.svg` | Logo del zorro (tarjeta y favicon) |
 | `.nojekyll` | Evita que GitHub Pages procese el sitio con Jekyll |

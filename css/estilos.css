@@ -388,7 +388,16 @@ button, input { font: inherit; color: inherit; }
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: color-mix(in srgb, var(--tinta) 75%, transparent);
+}
+.tarjeta-logo {
+  flex: none;
+  width: 40px;
+  height: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .tarjeta.rebote { animation: rebote 0.5s cubic-bezier(0.3, 1.6, 0.5, 1); }

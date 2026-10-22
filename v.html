@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0f0f1a">
-  <title>Tarjeta · Expo Ingeniería de Software</title>
+  <title>Tarjeta · Expo Cetys Ingeniería de Software</title>
+  <link rel="icon" href="img/zorro.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body class="vista">
@@ -15,7 +16,7 @@
       <div class="tarjeta-emoji" data-emoji></div>
       <h1 class="tarjeta-nombre" data-nombre></h1>
       <p class="tarjeta-mensaje" data-mensaje></p>
-      <p class="tarjeta-pie">Expo · Ingeniería de Software</p>
+      <p class="tarjeta-pie"><img class="tarjeta-logo" src="img/zorro.svg" alt="" width="40" height="42">Expo Cetys · Ingeniería de Software</p>
     </article>
 
     <p class="pista" id="pista">Toca la tarjeta 🎉</p>
@@ -32,7 +33,7 @@
       const escenario = document.getElementById("escenario");
       const d = Tarjeta.dibujar(tarjeta, datos);
 
-      document.title = `${d.emoji} ${d.nombre} · Expo`;
+      document.title = `${d.emoji} ${d.nombre} · Expo Cetys`;
       document.querySelector('meta[name="theme-color"]').content = d.color;
       document.body.style.setProperty("--c", d.color);
 
