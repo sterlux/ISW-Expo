@@ -345,7 +345,7 @@ button, input { font: inherit; color: inherit; }
   align-items: center;
   justify-content: center;
   text-align: center;
-  overflow: hidden;
+  overflow: clip; /* a diferencia de hidden, deja que aspect-ratio crezca si el texto no cabe */
   transform: rotateX(var(--rx)) rotateY(var(--ry));
   transition: transform 0.2s ease-out, background 0.4s, box-shadow 0.4s;
   cursor: pointer;
@@ -388,16 +388,14 @@ button, input { font: inherit; color: inherit; }
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 8px;
   color: color-mix(in srgb, var(--tinta) 75%, transparent);
 }
 .tarjeta-logo {
-  flex: none;
-  width: 40px;
+  display: block;
+  width: clamp(64px, 22vw, 88px);
   height: auto;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  margin-top: 18px;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
 }
 
 .tarjeta.rebote { animation: rebote 0.5s cubic-bezier(0.3, 1.6, 0.5, 1); }
@@ -571,6 +569,7 @@ body.vista {
 .tarjeta.entrada .tarjeta-emoji { animation: aparecer 0.6s 0.45s cubic-bezier(0.3, 1.8, 0.5, 1) both, flotar 3s 1.1s ease-in-out infinite; }
 .tarjeta.entrada .tarjeta-nombre { animation: subir 0.5s 0.6s ease-out both; }
 .tarjeta.entrada .tarjeta-mensaje { animation: subir 0.5s 0.75s ease-out both; }
+.tarjeta.entrada .tarjeta-logo { animation: aparecer 0.6s 0.9s cubic-bezier(0.3, 1.8, 0.5, 1) both; }
 .tarjeta.entrada.rebote { animation: rebote 0.5s cubic-bezier(0.3, 1.6, 0.5, 1); }
 
 @keyframes entrada {
