@@ -23,6 +23,15 @@ const Tarjeta = (() => {
     return graphemes(String(texto ?? "")).slice(0, max).join("");
   }
 
+  // Emojis que no se permiten (aunque se escriban con el teclado o en la URL).
+  const EMOJIS_BLOQUEADOS = ["🖕"];
+
+  function emojiPermitido(e) {
+    // Se ignoran tonos de piel y selector de variación para comparar el emoji base.
+    const base = e.replace(/[\u{1F3FB}-\u{1F3FF}️]/gu, "");
+    return !EMOJIS_BLOQUEADOS.includes(base);
+  }
+
   function colorValido(c) {
     const hex = String(c ?? "").trim().replace(/^#/, "");
     return /^[0-9a-f]{6}$/i.test(hex) ? "#" + hex.toLowerCase() : null;
@@ -35,7 +44,7 @@ const Tarjeta = (() => {
     return {
       nombre: nombre || DEFAULTS.nombre,
       color: colorValido(d.color) || DEFAULTS.color,
-      emoji: emoji || DEFAULTS.emoji,
+      emoji: emoji && emojiPermitido(emoji) ? emoji : DEFAULTS.emoji,
       mensaje: mensaje || DEFAULTS.mensaje,
     };
   }
