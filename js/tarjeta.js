@@ -96,8 +96,14 @@ const Tarjeta = (() => {
 
   // Lanza confeti del color de la tarjeta dentro de `contenedor`.
   function confeti(contenedor, color, cantidad = 40) {
-    if (typeof Sonido !== "undefined") Sonido.confeti();
+    // Si sonó la cerbatana, el confeti espera a que "pegue" el dardo.
+    const retraso = typeof Sonido !== "undefined" ? Sonido.confeti() : 0;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (retraso) setTimeout(() => lanzarConfeti(contenedor, color, cantidad), retraso);
+    else lanzarConfeti(contenedor, color, cantidad);
+  }
+
+  function lanzarConfeti(contenedor, color, cantidad) {
     const colores = [color, "#ffffff", "#ffd166", "#06d6a0", "#4cc9f0"];
     // Sale del centro de la tarjeta (o del contenedor si no hay tarjeta).
     const caja = contenedor.getBoundingClientRect();

@@ -5,6 +5,19 @@ const Sonido = (() => {
   let ctx = null;
   let ruido = null;
 
+  // Limitador a la salida para que el sonido nunca sature, aunque se encimen partes.
+  function salidaLimitada(c) {
+    const lim = c.createDynamicsCompressor();
+    lim.threshold.value = -8;
+    lim.knee.value = 4;
+    lim.ratio.value = 12;
+    lim.attack.value = 0.002;
+    lim.release.value = 0.15;
+    lim.connect(c.destination);
+    return lim;
+  }
+  let salida = null;
+
   // Un segundo de ruido blanco que se reutiliza en cada parte del sonido.
   function bufferRuido(c) {
     const b = c.createBuffer(1, c.sampleRate, c.sampleRate);
@@ -62,20 +75,100 @@ const Sonido = (() => {
     }
   }
 
+  // Cerbatana chistosa: trompetilla de cachetes → silbido del dardo → ¡boing!
+  const PROB_CERBATANA = 0.4;
+  const GOLPE = 0.6; // segundos hasta que el dardo "pega"
+
+  function sonarCerbatana(c, buf, salida, t) {
+    // 1. Trompetilla: diente de sierra grave con los "labios" vibrando (LFO de volumen)
+    const labios = c.createOscillator();
+    labios.type = "sawtooth";
+    labios.frequency.setValueAtTime(95, t);
+    labios.frequency.linearRampToValueAtTime(150, t + 0.2);
+    const vibra = c.createGain();
+    vibra.gain.value = 0.5;
+    const lfo = c.createOscillator();
+    lfo.type = "square";
+    lfo.frequency.value = 32;
+    const lfoGain = c.createGain();
+    lfoGain.gain.value = 0.5;
+    lfo.connect(lfoGain).connect(vibra.gain);
+    const grave = c.createBiquadFilter();
+    grave.type = "lowpass";
+    grave.frequency.value = 1100;
+    const env = c.createGain();
+    env.gain.setValueAtTime(0.0001, t);
+    env.gain.exponentialRampToValueAtTime(0.45, t + 0.03);
+    env.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    labios.connect(vibra).connect(grave).connect(env).connect(salida);
+    labios.start(t);
+    lfo.start(t);
+    labios.stop(t + 0.25);
+    lfo.stop(t + 0.25);
+    ruidoFiltrado(c, buf, salida, { inicio: t, duracion: 0.18, tipo: "bandpass", frecuencia: [700, 1400], q: 0.8, volumen: 0.25 });
+
+    // 2. Silbido del dardo: "fiiiuuu" que baja de tono
+    const tf = t + 0.16;
+    const silbido = c.createOscillator();
+    silbido.type = "sine";
+    silbido.frequency.setValueAtTime(2300, tf);
+    silbido.frequency.exponentialRampToValueAtTime(650, tf + 0.4);
+    const gs = c.createGain();
+    gs.gain.setValueAtTime(0.0001, tf);
+    gs.gain.exponentialRampToValueAtTime(0.2, tf + 0.04);
+    gs.gain.setValueAtTime(0.2, tf + 0.32);
+    gs.gain.exponentialRampToValueAtTime(0.0001, tf + 0.42);
+    silbido.connect(gs).connect(salida);
+    silbido.start(tf);
+    silbido.stop(tf + 0.45);
+
+    // 3. ¡Boing!: "tok" seco + resorte que tiembla y se apaga
+    const tg = t + GOLPE;
+    ruidoFiltrado(c, buf, salida, { inicio: tg, duracion: 0.03, tipo: "bandpass", frecuencia: [2500], q: 2, volumen: 0.6 });
+    const resorte = c.createOscillator();
+    resorte.type = "triangle";
+    resorte.frequency.value = 300;
+    const temblor = c.createOscillator();
+    temblor.frequency.value = 13;
+    const tg2 = c.createGain();
+    tg2.gain.setValueAtTime(90, tg);
+    tg2.gain.exponentialRampToValueAtTime(5, tg + 0.55);
+    temblor.connect(tg2).connect(resorte.frequency);
+    const gr = c.createGain();
+    gr.gain.setValueAtTime(0.0001, tg);
+    gr.gain.exponentialRampToValueAtTime(0.4, tg + 0.01);
+    gr.gain.exponentialRampToValueAtTime(0.0001, tg + 0.6);
+    resorte.connect(gr).connect(salida);
+    resorte.start(tg);
+    temblor.start(tg);
+    resorte.stop(tg + 0.65);
+    temblor.stop(tg + 0.65);
+  }
+
+  // Suena el confeti; devuelve en cuántos ms debe salir el confeti (0 = ya).
   function confeti() {
-    if (!AC) return;
+    if (!AC) return 0;
     try {
       ctx ||= new AC();
       ruido ||= bufferRuido(ctx);
+      salida ||= salidaLimitada(ctx);
+      // A veces, al azar, primero suena la cerbatana y el confeti explota cuando "pega" el dardo.
+      if (ctx.state === "running" && Math.random() < PROB_CERBATANA) {
+        const t = ctx.currentTime + 0.01;
+        sonarCerbatana(ctx, ruido, salida, t);
+        sonar(ctx, ruido, salida, t + GOLPE - 0.14); // su "pop" coincide con el golpe
+        return GOLPE * 1000;
+      }
       const pedido = performance.now();
       // Sin un toque previo el navegador mantiene el audio en pausa; en ese caso no suena
       // (y no se acumula para sonar tarde cuando por fin se active).
       ctx.resume().then(() => {
-        if (performance.now() - pedido < 250) sonar(ctx, ruido, ctx.destination, ctx.currentTime + 0.01);
+        if (performance.now() - pedido < 250) sonar(ctx, ruido, salida, ctx.currentTime + 0.01);
       });
     } catch {
       /* sin audio, no pasa nada */
     }
+    return 0;
   }
 
   // El primer toque en la página "desbloquea" el audio (necesario en iPhone).
@@ -88,5 +181,5 @@ const Sonido = (() => {
   }
   addEventListener("pointerdown", desbloquear, { once: true, capture: true });
 
-  return { confeti, sonar, bufferRuido };
+  return { confeti, sonar, sonarCerbatana, bufferRuido, salidaLimitada, GOLPE };
 })();
