@@ -4,6 +4,7 @@ Sitio estático (HTML, CSS y JS sin frameworks) para la Expo Cetys de Ingenierí
 
 - **`index.html`**: editor. El alumno cambia 4 variables (`nombre`, `color`, `emoji`, `mensaje`) en un bloque de código, ve la tarjeta en vivo, obtiene una URL corta y la graba en un sticker NFC (o usa el QR de respaldo).
 - **`v.html`**: vista. Lee los parámetros `n`, `c`, `e`, `m` de la URL y muestra la tarjeta animada.
+- **`splash.html`**: pantalla para dejar en una TV o monitor. Un editor de código escribe código aleatorio (JavaScript, Python y Java) sin parar, con el zorro y "Ingeniería de Software" al centro. Clic o tecla `F` para pantalla completa; el mouse se oculta solo y la pantalla no se apaga (donde el navegador lo permite).
 
 Ejemplo: `v.html?n=Luis&c=22c55e&e=%F0%9F%A4%96&m=Me+gusta+programar+robots`
 
@@ -35,6 +36,7 @@ python3 -m http.server 8000
 | `js/editor.js` | Editor en vivo, medidor de 450 caracteres, Web NFC (`NDEFReader`) y QR |
 | `js/filtro.js` | Filtro de groserías para nombre y mensaje (agrega palabras en `PALABRAS` o `RAICES`) |
 | `js/sonido.js` | Sonido del confeti (pop y chisporroteo) y, al azar (40 %), una cerbatana chistosa; generado con Web Audio |
+| `js/splash.js` · `css/splash.css` | Generador de código aleatorio y animación de `splash.html`; solo guarda las líneas que caben en pantalla |
 | `js/vendor/qrcode.js` | [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) (MIT), incluido para no depender de un CDN |
 | `css/estilos.css` | Estilos y animaciones |
 | `img/zorro.svg` | Logo del zorro (tarjeta y favicon) |

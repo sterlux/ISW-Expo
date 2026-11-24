@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1e1e1e">
+  <title>Ingeniería de Software · Expo Cetys</title>
+  <link rel="icon" href="img/zorro.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/splash.css">
+</head>
+<body>
+  <div class="ide" aria-hidden="true">
+    <header class="barra-titulo">
+      <span class="ventana"><i></i><i></i><i></i></span>
+      <span class="titulo" id="titulo-ventana">expo-cetys</span>
+    </header>
+
+    <nav class="actividad">
+      <svg viewBox="0 0 24 24" class="activo"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6"/></svg>
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-5-5"/></svg>
+      <svg viewBox="0 0 24 24"><circle cx="6" cy="5" r="2.5"/><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="8" r="2.5"/><path d="M6 7.5v9M18 10.5c0 4-6 3-12 6"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg>
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    </nav>
+
+    <aside class="explorador">
+      <p class="explorador-titulo">Explorador</p>
+      <p class="carpeta">▾ EXPO-CETYS</p>
+      <p class="carpeta sub">▾ src</p>
+      <ul id="archivos"></ul>
+    </aside>
+
+    <main class="area">
+      <div class="pestanas" id="pestanas"></div>
+      <div class="migas" id="migas"></div>
+      <div class="editor">
+        <div class="lineas" id="lineas"><div class="contenido" id="contenido"></div></div>
+        <canvas class="minimapa" id="minimapa"></canvas>
+      </div>
+      <section class="terminal">
+        <div class="terminal-tabs"><span>Problemas</span><span>Salida</span><span class="activo">Terminal</span></div>
+        <div class="terminal-lineas" id="terminal"></div>
+      </section>
+    </main>
+
+    <footer class="barra-estado">
+      <span>⎇ main</span>
+      <span>⊘ 0 ⚠ 0</span>
+      <span class="der" id="estado-pos">Ln 1, Col 1</span>
+      <span>Espacios: 4</span>
+      <span>UTF-8</span>
+      <span id="estado-lenguaje">JavaScript</span>
+      <span>🦊 Expo Cetys</span>
+    </footer>
+  </div>
+
+  <div class="centro">
+    <div class="centro-tarjeta">
+      <img src="img/zorro.svg" alt="Logo CETYS" class="centro-logo" width="200" height="210">
+      <h1>Ingeniería de <span>Software</span></h1>
+    </div>
+  </div>
+
+  <script src="js/splash.js"></script>
+</body>
+</html>

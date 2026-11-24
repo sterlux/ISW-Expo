@@ -1,0 +1,320 @@
+/* Pantalla tipo wallpaper / splash: un IDE oscuro escribiendo código sin parar. */
+:root {
+  --fondo: #1e1e1e;
+  --lateral: #252526;
+  --actividad: #333333;
+  --pestana: #2d2d2d;
+  --borde: #2b2b2b;
+  --texto: #cccccc;
+  --tenue: #858585;
+  --amarillo: #ffcd08;
+  --mono: "Cascadia Code", "JetBrains Mono", "Fira Code", Consolas, Menlo, monospace;
+  --code: clamp(13px, 1.05vw, 22px);
+
+  /* Colores de sintaxis */
+  --k: #569cd6;  /* palabra clave */
+  --c: #c586c0;  /* control: if, for, return… */
+  --s: #ce9178;  /* texto */
+  --n: #b5cea8;  /* número */
+  --m: #6a9955;  /* comentario */
+  --f: #dcdcaa;  /* función */
+  --v: #9cdcfe;  /* variable */
+  --t: #4ec9b0;  /* clase / tipo */
+  --p: #d4d4d4;  /* símbolos */
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--fondo);
+  color: var(--texto);
+  font: 13px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+body.sin-cursor, body.sin-cursor * { cursor: none; }
+
+/* ---------- Estructura del IDE ---------- */
+.ide {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 48px clamp(180px, 15vw, 280px) 1fr;
+  grid-template-rows: 32px 1fr 24px;
+  grid-template-areas:
+    "titulo titulo titulo"
+    "actividad explorador area"
+    "estado estado estado";
+}
+
+.barra-titulo {
+  grid-area: titulo;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: #3c3c3c;
+  color: #cccccc;
+  font-size: 12px;
+}
+.ventana { position: absolute; left: 14px; display: flex; gap: 8px; }
+.ventana i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+.ventana i:nth-child(2) { background: #febc2e; }
+.ventana i:nth-child(3) { background: #28c840; }
+
+.actividad {
+  grid-area: actividad;
+  background: var(--actividad);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  padding-top: 14px;
+}
+.actividad svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: #858585;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.actividad svg.activo { stroke: #ffffff; }
+
+.explorador {
+  grid-area: explorador;
+  background: var(--lateral);
+  padding: 8px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.explorador p { margin: 0; padding: 3px 14px; font-size: 11px; }
+.explorador-titulo { color: #bbbbbb; text-transform: uppercase; letter-spacing: 0.06em; padding-bottom: 10px !important; }
+.carpeta { font-weight: 700; color: #cccccc; }
+.carpeta.sub { padding-left: 24px !important; font-weight: 400; }
+#archivos { list-style: none; margin: 0; padding: 0; }
+#archivos li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 14px 3px 40px;
+  font-size: 13px;
+  color: #cccccc;
+}
+#archivos li.activo { background: #37373d; outline: 1px solid #007fd4; outline-offset: -1px; }
+
+.icono {
+  font: 700 9px/1 var(--mono);
+  width: 18px;
+  text-align: center;
+}
+.icono.js { color: #f1e05a; }
+.icono.py { color: #3d8fd6; }
+.icono.java { color: #e76f00; }
+
+.area {
+  grid-area: area;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.pestanas {
+  display: flex;
+  height: 35px;
+  flex: none;
+  background: #252526;
+  overflow: hidden;
+}
+.pestana {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 14px;
+  background: var(--pestana);
+  color: #969696;
+  border-right: 1px solid #252526;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.pestana.activa { background: var(--fondo); color: #ffffff; box-shadow: inset 0 1px 0 var(--amarillo); }
+.pestana .cerrar { color: #858585; font-size: 11px; margin-left: 4px; }
+.pestana.activa .cerrar::before { content: "●"; }
+.pestana.guardada .cerrar::before { content: "✕"; }
+
+.migas {
+  flex: none;
+  height: 22px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  color: #a9a9a9;
+  font-size: 12px;
+}
+
+.editor {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+}
+.lineas {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font: var(--code) / 1.55 var(--mono);
+  padding-top: 2px;
+}
+.linea {
+  display: flex;
+  white-space: pre;
+}
+.linea .num {
+  flex: none;
+  width: 4.5em;
+  padding-right: 1.6em;
+  text-align: right;
+  color: #6e7681;
+  user-select: none;
+}
+.linea.actual { background: rgba(255, 255, 255, 0.04); box-shadow: inset 0 0 0 1px #282828; }
+.linea.actual .num { color: #c6c6c6; }
+.linea .txt { overflow: hidden; }
+
+/* Cursor parpadeante */
+.linea.actual .txt::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: #aeafad;
+  animation: parpadeo 1s steps(1) infinite;
+}
+@keyframes parpadeo { 50% { opacity: 0; } }
+
+.k { color: var(--k); }
+.c { color: var(--c); }
+.s { color: var(--s); }
+.n { color: var(--n); }
+.m { color: var(--m); font-style: italic; }
+.f { color: var(--f); }
+.v { color: var(--v); }
+.t { color: var(--t); }
+.p { color: var(--p); }
+
+.minimapa {
+  flex: none;
+  width: clamp(60px, 6vw, 110px);
+  height: 100%;
+  border-left: 1px solid #2a2a2a;
+  opacity: 0.85;
+}
+
+.terminal {
+  flex: none;
+  height: clamp(120px, 20vh, 240px);
+  border-top: 1px solid #3c3c3c;
+  background: var(--fondo);
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+}
+.terminal-tabs { display: flex; gap: 20px; padding: 6px 18px; text-transform: uppercase; color: #969696; letter-spacing: 0.04em; }
+.terminal-tabs .activo { color: #e7e7e7; border-bottom: 1px solid #e7e7e7; }
+.terminal-lineas {
+  flex: 1;
+  overflow: hidden;
+  padding: 4px 18px;
+  font: calc(var(--code) * 0.92) / 1.5 var(--mono);
+  color: #cccccc;
+}
+.terminal-lineas div { white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+.terminal-lineas .ok { color: #23d18b; }
+.terminal-lineas .prompt { color: #3b8eea; }
+.terminal-lineas .prompt b { color: #cccccc; font-weight: 400; }
+
+.barra-estado {
+  grid-area: estado;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 12px;
+  background: var(--amarillo);
+  color: #1e1e1e;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.barra-estado .der { margin-left: auto; }
+
+/* ---------- Centro: logo y título ---------- */
+.centro {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  /* Oscurece el centro para que se lea bien sobre el código */
+  background: radial-gradient(ellipse 55% 50% at 50% 50%, rgba(10, 10, 14, 0.85), rgba(10, 10, 14, 0.35) 70%, transparent);
+}
+.centro-tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 2vh, 28px);
+  padding: clamp(24px, 4vw, 56px) clamp(28px, 6vw, 96px);
+  border-radius: 32px;
+  background: rgba(24, 24, 28, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.8), 0 0 120px -30px rgba(255, 205, 8, 0.35);
+  animation: aparecer 1.2s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+}
+.centro-logo {
+  width: clamp(110px, 16vmin, 260px);
+  height: auto;
+  filter: drop-shadow(0 12px 30px rgba(255, 205, 8, 0.35));
+  animation: flotar 5s ease-in-out infinite;
+}
+.centro h1 {
+  margin: 0;
+  font-size: clamp(30px, 6vw, 104px);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: #ffffff;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}
+.centro h1 span {
+  display: block;
+  color: var(--amarillo);
+  text-shadow: 0 0 40px rgba(255, 205, 8, 0.45);
+}
+
+@keyframes flotar {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+@keyframes aparecer {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Celular / pantalla vertical: solo editor y terminal */
+@media (max-width: 760px) {
+  .ide { grid-template-columns: 0 0 1fr; }
+  .actividad, .explorador, .minimapa { display: none; }
+  .terminal { height: 90px; }
+  .barra-estado span:nth-child(n + 4):not(:last-child) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .centro-logo, .centro-tarjeta { animation: none; }
+}
